@@ -94,6 +94,8 @@ int getopt(int argc, char* argv[], const char* optstring) {
 
 		return flag;
 	}
+
+	optind = argc - optpos;
 	return -1;
 }
 
