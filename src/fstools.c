@@ -12,8 +12,9 @@ typedef struct {
 } command;
 
 command commands[] = {
-	{.name = "cat"}, {.name = "cp"}, {.name = "ls"},	{.name = "mkdir"},
-	{.name = "mv"},	 {.name = "rm"}, {.name = "rmdir"}, {.name = "touch"},
+	{.name = "cat"}, {.name = "cp"},	{.name = "fsck"},
+	{.name = "ls"},	 {.name = "mkdir"}, {.name = "mv"},
+	{.name = "rm"},	 {.name = "rmdir"}, {.name = "touch"},
 };
 
 void error(int argc, char* argv[], const char* fmt, ...) {
