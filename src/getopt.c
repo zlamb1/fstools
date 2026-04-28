@@ -101,11 +101,11 @@ int getopt(int argc, char* argv[], const char* optstring) {
 			optflag = 0;
 		}
 
-		return flag;
+		return (flag);
 	}
 
 	optind = argc - optpos;
-	return -1;
+	return (-1);
 }
 
 void getopt_reset(void) {
