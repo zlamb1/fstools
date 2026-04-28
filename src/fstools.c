@@ -19,18 +19,18 @@ command commands[] = {
 void error(int argc, char* argv[], const char* fmt, ...) {
 	const char* name = argc ? argv[0] : "fstools";
 	va_list args;
-
 	fprintf(stderr, "%s: \033[1;31merror: \033[0m", name);
-
 	va_start(args, fmt);
 	vfprintf(stderr, fmt, args);
 	va_end(args);
-
+	fprintf(stderr, "\n");
 	exit(1);
 }
 
 int main(int argc, char* argv[]) {
 	int flag;
+
+	opterrcb = error;
 
 	while ((flag = getopt(argc, argv, "")) > -1) {
 	}

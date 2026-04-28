@@ -4,7 +4,7 @@
 
 char* optarg;
 int optind = 1, opterr = 1, optopt;
-
+void (*opterrcb)(int argc, char* argv[], const char* fmt, ...) = null;
 usize optflag, optpos;
 
 int getopt(int argc, char* argv[], const char* optstring) {
@@ -69,8 +69,12 @@ int getopt(int argc, char* argv[], const char* optstring) {
 			optopt = flag;
 			flag = '?';
 			if (opterr) {
-				fprintf(stderr, "%s: error: invalid option '%c'\n", argv[0],
-						optopt);
+				if (opterrcb == null) {
+					fprintf(stderr, "%s: error: invalid option '%c'\n", argv[0],
+							optopt);
+				} else {
+					opterrcb(argc, argv, "invalid option '%c'\n", optopt);
+				}
 			}
 		}
 
@@ -83,9 +87,14 @@ int getopt(int argc, char* argv[], const char* optstring) {
 				optopt = flag;
 				flag = '?';
 				if (opterr) {
-					fprintf(stderr,
-							"%s: error: option requires an argument '%c'\n",
-							argv[0], optopt);
+					if (opterrcb == null) {
+						fprintf(stderr,
+								"%s: error: option requires an argument '%c'\n",
+								argv[0], optopt);
+					} else {
+						opterrcb(argc, argv,
+								 "option requires an argument '%c'\n", optopt);
+					}
 				}
 			}
 			optind++;
