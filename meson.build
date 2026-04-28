@@ -6,7 +6,8 @@ project(
 )
 
 sources = files(
-    'src/fstools.c'
+    'src/fstools.c',
+    'src/getopt.c',
 )
 
 project_exe = executable(
