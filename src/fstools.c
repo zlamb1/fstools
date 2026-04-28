@@ -56,7 +56,6 @@ int main(int argc, char* argv[]) {
 			}
 		}
 		error(argc, argv, "unknown command '%s'", name);
-		exit(1);
 	}
 
 done:
