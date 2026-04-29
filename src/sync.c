@@ -20,7 +20,7 @@ rwlock rwlock_create(void) {
 	pthread_condattr_t condattr;
 
 	if (lock == NULL) {
-		return NULL;
+		return (NULL);
 	}
 
 	lock->readers = 0;
@@ -53,7 +53,7 @@ rwlock rwlock_create(void) {
 	pthread_condattr_destroy(&condattr);
 	pthread_mutexattr_destroy(&mutexattr);
 
-	return lock;
+	return (lock);
 
 out5:
 	pthread_cond_destroy(&lock->reader_cv);
@@ -65,7 +65,7 @@ out2:
 	pthread_mutexattr_destroy(&mutexattr);
 out1:
 	free(lock);
-	return NULL;
+	return (NULL);
 }
 
 void rwlock_read_lock(rwlock lock) {
@@ -79,7 +79,8 @@ void rwlock_read_lock(rwlock lock) {
 
 void rwlock_read_unlock(rwlock lock) {
 	pthread_mutex_lock(&lock->mutex);
-	if (lock->writers && !--lock->readers) {
+	counter readers = --lock->readers;
+	if (lock->writers && !readers) {
 		pthread_cond_signal(&lock->writer_cv);
 	}
 	pthread_mutex_unlock(&lock->mutex);
