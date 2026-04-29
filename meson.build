@@ -8,6 +8,7 @@ project(
 sources = files(
     'src/fstools.c',
     'src/getopt.c',
+    'src/sync.c',
 )
 
 project_exe = executable(
