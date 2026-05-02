@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	if (optind == argc) {
-		fprintf(stderr, "Usage: %s [COMMAND] [ARGS]...\n\n", argv[0]);
+		fprintf(stderr, "Usage: %s [COMMAND] [ARGS]...\n\n", base_name);
 		fprintf(stderr, "COMMANDS:\n");
 		for (usize i = 0; i < sizeof(commands) / sizeof(*commands); i++) {
 			command command = commands[i];
