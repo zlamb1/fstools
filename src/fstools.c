@@ -1,64 +1,32 @@
-#include <stdarg.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
-#include "getopt.h"
-#include "types.h"
+#include "fstools.h"
 
-typedef struct {
-	const char* name;
-	void (*fn)(int argc, char* argv[]);
-} command;
-
-command commands[] = {
-	{.name = "cat"}, {.name = "cp"},	{.name = "fsck"},
-	{.name = "ls"},	 {.name = "mkdir"}, {.name = "mv"},
-	{.name = "rm"},	 {.name = "rmdir"}, {.name = "touch"},
-};
-
-void error(int argc, char* argv[], const char* fmt, ...) {
-	const char* name = argc ? argv[0] : "fstools";
-	va_list args;
-	fprintf(stderr, "%s: \033[1;31merror: \033[0m", name);
-	va_start(args, fmt);
-	vfprintf(stderr, fmt, args);
-	va_end(args);
-	fprintf(stderr, "\n");
-	exit(1);
+fst_volume* fst_volume_create(const fst_volume_ops* ops) {
+	fst_volume* volume = malloc(sizeof(*volume));
+	if (volume == NULL) {
+		return NULL;
+	}
+	volume->ops = ops;
+	volume->ino_cache.lock = rwlock_create();
+	if (volume->ino_cache.lock == NULL) {
+		goto out1;
+	}
+	volume->ino_cache.capacity = FST_INODE_CACHE_CAP;
+	volume->ino_cache.table = malloc(sizeof(fst_inode*) * FST_INODE_CACHE_CAP);
+	if (volume->ino_cache.table == NULL) {
+		goto out2;
+	}
+	return volume;
+out2:
+	rwlock_destroy(volume->ino_cache.lock);
+out1:
+	free(volume);
+	return NULL;
 }
 
-int main(int argc, char* argv[]) {
-	int flag;
-
-	opterrcb = error;
-
-	while ((flag = getopt(argc, argv, "")) > -1) {
-	}
-
-	if (optind == argc) {
-		fprintf(stderr, "Usage: %s [COMMAND] [ARGS]...\n\n", argv[0]);
-		fprintf(stderr, "COMMANDS:\n");
-		for (usize i = 0; i < sizeof(commands) / sizeof(*commands); i++) {
-			command command = commands[i];
-			fprintf(stderr, "%s\n", command.name);
-		}
-		exit(1);
-	} else {
-		const char* name = argv[optind];
-		for (usize i = 0; i < sizeof(commands) / sizeof(*commands); i++) {
-			command command = commands[i];
-			if (!strcmp(name, command.name)) {
-				if (command.fn == null) {
-					error(argc, argv, "unimplemented");
-				}
-				command.fn(argc, argv);
-				goto done;
-			}
-		}
-		error(argc, argv, "unknown command '%s'", name);
-	}
-
-done:
-	return (0);
+void fst_volume_destroy(fst_volume* volume) {
+	rwlock_destroy(volume->ino_cache.lock);
+	free(volume->ino_cache.table);
+	free(volume);
 }

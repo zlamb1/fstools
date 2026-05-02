@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <pthread.h>
 #include <stdlib.h>
 
@@ -31,7 +32,7 @@ rwlock rwlock_create(void) {
 	}
 
 	if (pthread_mutexattr_settype(&mutexattr, PTHREAD_MUTEX_NORMAL)) {
-		goto out1;
+		goto out2;
 	}
 
 	if (pthread_condattr_init(&condattr)) {

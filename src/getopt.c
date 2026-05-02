@@ -73,7 +73,7 @@ int getopt(int argc, char* argv[], const char* optstring) {
 					fprintf(stderr, "%s: error: invalid option '%c'\n", argv[0],
 							optopt);
 				} else {
-					opterrcb(argc, argv, "invalid option '%c'\n", optopt);
+					opterrcb("invalid option '%c'\n", optopt);
 				}
 			}
 		}
@@ -92,8 +92,7 @@ int getopt(int argc, char* argv[], const char* optstring) {
 								"%s: error: option requires an argument '%c'\n",
 								argv[0], optopt);
 					} else {
-						opterrcb(argc, argv,
-								 "option requires an argument '%c'\n", optopt);
+						opterrcb("option requires an argument '%c'\n", optopt);
 					}
 				}
 			}

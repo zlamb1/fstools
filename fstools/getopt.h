@@ -3,7 +3,7 @@
 
 extern char* optarg;
 extern int optind, opterr, optopt;
-extern void (*opterrcb)(int argc, char* argv[], const char* fmt, ...);
+extern void (*opterrcb)(const char* fmt, ...);
 
 int getopt(int argc, char* argv[], const char* optstring);
 void getopt_reset(void);

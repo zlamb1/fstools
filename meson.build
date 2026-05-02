@@ -6,6 +6,8 @@ project(
 )
 
 sources = files(
+    'src/commands/fstools.c',
+    'src/fat.c',
     'src/fstools.c',
     'src/getopt.c',
     'src/sync.c',
