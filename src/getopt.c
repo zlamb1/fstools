@@ -4,7 +4,7 @@
 
 char* optarg;
 int optind = 1, opterr = 1, optopt;
-void (*opterrcb)(int argc, char* argv[], const char* fmt, ...) = null;
+void (*opterrcb)(const char* fmt, ...) = null;
 usize optflag, optpos;
 
 int getopt(int argc, char* argv[], const char* optstring) {
@@ -108,6 +108,6 @@ int getopt(int argc, char* argv[], const char* optstring) {
 }
 
 void getopt_reset(void) {
-	optind = 1;
+	optind = opterr = 1;
 	optflag = optpos = 0;
 }

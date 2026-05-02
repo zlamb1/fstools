@@ -14,6 +14,7 @@ typedef struct {
 } command;
 
 static const char* base_name = "fstools";
+static const char* sub_name = NULL;
 
 command commands[] = {
 	{.name = "cat"}, {.name = "cp"},	{.name = "fsck"},
@@ -23,7 +24,11 @@ command commands[] = {
 
 void error(const char* fmt, ...) {
 	va_list args;
-	fprintf(stderr, "%s: \033[1;31merror: \033[0m", base_name);
+	fprintf(stderr, "%s: \033[1;31merror: ", base_name);
+	if (sub_name != NULL) {
+		fprintf(stderr, "\033[0;1m%s: ", sub_name);
+	}
+	fprintf(stderr, "\033[0m");
 	va_start(args, fmt);
 	vfprintf(stderr, fmt, args);
 	va_end(args);
@@ -39,6 +44,7 @@ int main(int argc, char* argv[]) {
 		base_name = argv[0];
 
 	opterrcb = error;
+	opterr = 0;
 
 	while ((flag = getopt(argc, argv, "")) > -1) {
 	}
@@ -77,6 +83,7 @@ int main(int argc, char* argv[]) {
 			if (command.fn == null) {
 				error("unimplemented");
 			}
+			sub_name = command_name;
 			command.fn(argc, argv);
 			goto done;
 		}
