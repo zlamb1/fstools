@@ -6,7 +6,6 @@
 #include <string.h>
 
 #include "getopt.h"
-#include "types.h"
 
 typedef struct {
 	const char* name;
@@ -52,7 +51,8 @@ int main(int argc, char* argv[]) {
 	if (optind == argc) {
 		fprintf(stderr, "Usage: %s [COMMAND] [ARGS]...\n\n", base_name);
 		fprintf(stderr, "COMMANDS:\n");
-		for (usize i = 0; i < sizeof(commands) / sizeof(*commands); i++) {
+		for (unsigned long i = 0; i < sizeof(commands) / sizeof(*commands);
+			 i++) {
 			command command = commands[i];
 			fprintf(stderr, "%s\n", command.name);
 		}
@@ -77,10 +77,10 @@ int main(int argc, char* argv[]) {
 		getopt_reset();
 	}
 
-	for (usize i = 0; i < sizeof(commands) / sizeof(*commands); i++) {
+	for (unsigned long i = 0; i < sizeof(commands) / sizeof(*commands); i++) {
 		command command = commands[i];
 		if (!strcmp(command_name, command.name)) {
-			if (command.fn == null) {
+			if (command.fn == NULL) {
 				error("unimplemented");
 			}
 			sub_name = command_name;

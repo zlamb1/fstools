@@ -3,20 +3,17 @@
 #include <stdlib.h>
 
 #include "sync.h"
-#include "types.h"
 
-typedef unsigned long counter;
-
-struct rwlock_t {
+struct FST_rwlock_t {
 	pthread_mutex_t mutex;
 	pthread_cond_t reader_cv;
 	pthread_cond_t writer_cv;
-	counter readers;
-	counter writers;
+	unsigned long readers;
+	unsigned long writers;
 };
 
-rwlock rwlock_create(void) {
-	rwlock lock = malloc(sizeof(*lock));
+FST_rwlock fst_rwlock_create(void) {
+	FST_rwlock lock = malloc(sizeof(*lock));
 	pthread_mutexattr_t mutexattr;
 	pthread_condattr_t condattr;
 
@@ -69,7 +66,7 @@ out1:
 	return (NULL);
 }
 
-void rwlock_read_lock(rwlock lock) {
+void fst_read_lock(FST_rwlock lock) {
 	pthread_mutex_lock(&lock->mutex);
 	while (lock->writers) {
 		pthread_cond_wait(&lock->reader_cv, &lock->mutex);
@@ -78,16 +75,16 @@ void rwlock_read_lock(rwlock lock) {
 	pthread_mutex_unlock(&lock->mutex);
 }
 
-void rwlock_read_unlock(rwlock lock) {
+void fst_read_unlock(FST_rwlock lock) {
 	pthread_mutex_lock(&lock->mutex);
-	counter readers = --lock->readers;
+	unsigned long readers = --lock->readers;
 	if (lock->writers && !readers) {
 		pthread_cond_signal(&lock->writer_cv);
 	}
 	pthread_mutex_unlock(&lock->mutex);
 }
 
-void rwlock_write_lock(rwlock lock) {
+void fst_write_lock(FST_rwlock lock) {
 	pthread_mutex_lock(&lock->mutex);
 	lock->writers++;
 	while (lock->readers) {
@@ -95,7 +92,7 @@ void rwlock_write_lock(rwlock lock) {
 	}
 }
 
-void rwlock_write_unlock(rwlock lock) {
+void fst_write_unlock(FST_rwlock lock) {
 	if (--lock->writers) {
 		pthread_cond_signal(&lock->writer_cv);
 	} else {
@@ -104,7 +101,7 @@ void rwlock_write_unlock(rwlock lock) {
 	pthread_mutex_unlock(&lock->mutex);
 }
 
-void rwlock_destroy(rwlock lock) {
+void fst_rwlock_destroy(FST_rwlock lock) {
 	pthread_mutex_destroy(&lock->mutex);
 	pthread_cond_destroy(&lock->reader_cv);
 	pthread_cond_destroy(&lock->writer_cv);

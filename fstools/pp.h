@@ -2,15 +2,15 @@
 #define FSTOOLS_PP_H 1
 
 #ifdef __GNUC__
-#define _packed(decl) decl __attribute__((packed))
+#define FST_PACK(decl) decl __attribute__((packed))
 #endif
 
 #ifdef _MSC_VER
-#define _packed(decl) __pragma(pack(push, 1)) decl __pragma(pack(pop))
+#define FST_PACK(decl) __pragma(pack(push, 1)) decl __pragma(pack(pop))
 #endif
 
-#ifndef _packed
-#error Unsupported Compiler
+#ifndef FST_PACK
+#error unsupported compiler
 #endif
 
 #endif

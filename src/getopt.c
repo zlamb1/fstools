@@ -1,21 +1,21 @@
-#include "getopt.h"
 #include <stdio.h>
-#include "types.h"
+
+#include "getopt.h"
 
 char* optarg;
-int optind = 1, opterr = 1, optopt;
-void (*opterrcb)(const char* fmt, ...) = null;
-usize optflag, optpos;
+int optind = 1, fstools_opterr = 1, optopt;
+void (*opterrcb)(const char* fmt, ...) = NULL;
+unsigned long optflag, optpos;
 
 int getopt(int argc, char* argv[], const char* optstring) {
-	optarg = null;
+	optarg = NULL;
 
 	while (optind < argc) {
 		char* arg = argv[optind];
 		int flag;
 		char ch;
 
-		bool found = false;
+		int found = 0;
 		int needs_arg = 0;
 
 		if (!optflag) {
@@ -27,7 +27,7 @@ int getopt(int argc, char* argv[], const char* optstring) {
 				if (arg[1] != '\0') {
 					// Shift the positional arguments.
 					char** p = &argv[optind - 1];
-					for (usize i = 0; i < optpos; i++) {
+					for (unsigned long i = 0; i < optpos; i++) {
 						char* tmp = p[1];
 						p[1] = p[0];
 						p[0] = tmp;
@@ -51,9 +51,9 @@ int getopt(int argc, char* argv[], const char* optstring) {
 			continue;
 		}
 
-		for (usize i = 0; (ch = optstring[i]) != '\0'; i++) {
+		for (unsigned long i = 0; (ch = optstring[i]) != '\0'; i++) {
 			if (ch == flag) {
-				found = true;
+				found = 1;
 				if (optstring[i + 1] == ':') {
 					if (optstring[i + 2] != ':') {
 						needs_arg = 1;
@@ -68,8 +68,8 @@ int getopt(int argc, char* argv[], const char* optstring) {
 		if (!found) {
 			optopt = flag;
 			flag = '?';
-			if (opterr) {
-				if (opterrcb == null) {
+			if (fstools_opterr) {
+				if (opterrcb == NULL) {
 					fprintf(stderr, "%s: error: invalid option '%c'\n", argv[0],
 							optopt);
 				} else {
@@ -86,8 +86,8 @@ int getopt(int argc, char* argv[], const char* optstring) {
 			} else if (needs_arg == 1) {
 				optopt = flag;
 				flag = '?';
-				if (opterr) {
-					if (opterrcb == null) {
+				if (fstools_opterr) {
+					if (opterrcb == NULL) {
 						fprintf(stderr,
 								"%s: error: option requires an argument '%c'\n",
 								argv[0], optopt);
